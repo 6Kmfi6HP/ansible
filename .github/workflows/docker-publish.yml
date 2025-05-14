@@ -42,8 +42,12 @@ jobs:
 
       - name: Build and push multi-arch Docker image
         run: |
+          # 把 GITHUB_REPOSITORY (owner/repo) 全部转为小写
+          REPO_LOWER=${GITHUB_REPOSITORY,,}
           docker buildx build --push \
             --platform linux/amd64,linux/arm64 \
-            --tag ghcr.io/${{ github.repository }}:${{ env.VERSION }} \
-            --build-arg VERSION=${{ env.VERSION }} \
+            --tag ghcr.io/${REPO_LOWER}:${VERSION} \
+            --build-arg VERSION=${VERSION} \
             .
+        env:
+          VERSION: ${{ github.event.inputs.version }}
